@@ -8,14 +8,17 @@
 	},
 	"devDependencies": {
 		"@types/node": "^22.5.5",
+		"dagre-d3": "^0.6.4",
 		"typescript": "^5.6.2",
 		"vite": "^5.4.6"
 	},
 	"dependencies": {
-		"@topology-foundation/crdt": "^0.1.1",
+		"@topology-foundation/blueprints": "^0.2.0",
 		"@topology-foundation/network": "^0.1.1",
 		"@topology-foundation/node": "^0.1.1",
 		"@topology-foundation/object": "^0.1.1",
+		"@types/d3": "^7.4.3",
+		"@types/dagre-d3": "^0.6.6",
 		"ts-node": "^10.9.2"
 	}
 }
