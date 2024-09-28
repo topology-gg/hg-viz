@@ -12,14 +12,14 @@ importers:
         specifier: ^0.2.0
         version: 0.2.0
       '@topology-foundation/network':
-        specifier: ^0.1.1
-        version: 0.1.1(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(react@18.3.1)(typescript@5.6.2))
+        specifier: ^0.2.0
+        version: 0.2.0(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(react@18.3.1)(typescript@5.6.2))
       '@topology-foundation/node':
-        specifier: ^0.1.1
-        version: 0.1.1(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(react@18.3.1)(typescript@5.6.2))
+        specifier: ^0.2.0
+        version: 0.2.0(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(react@18.3.1)(typescript@5.6.2))
       '@topology-foundation/object':
-        specifier: ^0.1.1
-        version: 0.1.1
+        specifier: ^0.2.0
+        version: 0.2.0
       '@types/d3':
         specifier: ^7.4.3
         version: 7.4.3
@@ -1308,17 +1308,14 @@ packages:
   '@topology-foundation/blueprints@0.2.0':
     resolution: {integrity: sha512-G/evl7EyLzOWFSFoHFT1ifgASoscMQhWsbmeHRU0YrchR3mO9jgeV+sEwrvdqq6AZnavh85BpMGvbgLWlOGE/w==}
 
-  '@topology-foundation/crdt@0.1.1':
-    resolution: {integrity: sha512-wWEK5gkzux73rin5oycOxTsxQhxZuX29H2gZivRs9Sg8zLnEs/7fZFSf/iRGMZy5Qp/dV7qRgbrxcOaMBw9B7Q==}
+  '@topology-foundation/network@0.2.0':
+    resolution: {integrity: sha512-zQ9ZtbGB7SJ3/xLis+GL3w74zpF2yO6+FAebzOGicpMUgt/aSWPO8mkWqmjFNLKFjaofaWM4BTDd7DFCPZ2FiA==}
 
-  '@topology-foundation/network@0.1.1':
-    resolution: {integrity: sha512-Jy1XGsp3868pSm6ZVA0vvR9zJL14l2w2iCi8WiBHgGr/OkuGJlRVJ6P+kZUZIy5WfrWzrqcJm+vbyGVw0qxZuQ==}
+  '@topology-foundation/node@0.2.0':
+    resolution: {integrity: sha512-pTA6/BjLvEH1DEDkcwSGCLXcTzwt7Qfre/7Pa+CPMZe6zpoYj2rH1ANTDKifXfLfw8plUAHZDUJvtO5pQrKS/A==}
 
-  '@topology-foundation/node@0.1.1':
-    resolution: {integrity: sha512-XX9rXxEjFYVeioA7UaBqwx775F0/Hy/nNVcIj1TuTSj10XZ7lXyAapsyqQFI0AyjZlDtzCnX1njWfzHQRWiiBw==}
-
-  '@topology-foundation/object@0.1.1':
-    resolution: {integrity: sha512-L6JZzhGqplxGUfjjIB2mZzL5Q+XNXo/424U5u24FVwLSx03sg4VJAjr8TaCJXaOtghb8XYlegDtcY8kbv887FQ==}
+  '@topology-foundation/object@0.2.0':
+    resolution: {integrity: sha512-0tzMWJWOO8csdaKsxhp+qVQp90lqsGC5zAc0yDAdkOYDtO6jGSfzuerRosMZJFTCJqBE1mIU87DgwN2xsRWZ/Q==}
 
   '@tsconfig/node10@1.0.11':
     resolution: {integrity: sha512-DcRjDCujK/kCk/cUe8Xz8ZSpm8mS3mNNpta+jGCA6USEDfktlNvm1+IuZ9eTcDbNk41BHwpHHeW+N1lKCz4zOw==}
@@ -5690,9 +5687,7 @@ snapshots:
     dependencies:
       '@thi.ng/random': 4.0.4
 
-  '@topology-foundation/crdt@0.1.1': {}
-
-  '@topology-foundation/network@0.1.1(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(react@18.3.1)(typescript@5.6.2))':
+  '@topology-foundation/network@0.2.0(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(react@18.3.1)(typescript@5.6.2))':
     dependencies:
       '@bufbuild/protobuf': 2.1.0
       '@chainsafe/libp2p-gossipsub': 13.2.0
@@ -5725,13 +5720,13 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@topology-foundation/node@0.1.1(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(react@18.3.1)(typescript@5.6.2))':
+  '@topology-foundation/node@0.2.0(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(react@18.3.1)(typescript@5.6.2))':
     dependencies:
       '@chainsafe/libp2p-gossipsub': 13.2.0
       '@libp2p/interface': 1.7.0
-      '@topology-foundation/crdt': 0.1.1
-      '@topology-foundation/network': 0.1.1(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(react@18.3.1)(typescript@5.6.2))
-      '@topology-foundation/object': 0.1.1
+      '@topology-foundation/blueprints': 0.2.0
+      '@topology-foundation/network': 0.2.0(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(react@18.3.1)(typescript@5.6.2))
+      '@topology-foundation/object': 0.2.0
       commander: 12.1.0
       it-length-prefixed: 9.1.0
     transitivePeerDependencies:
@@ -5740,7 +5735,7 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@topology-foundation/object@0.1.1':
+  '@topology-foundation/object@0.2.0':
     dependencies:
       '@bufbuild/protobuf': 2.1.0
       ts-proto: 2.2.0

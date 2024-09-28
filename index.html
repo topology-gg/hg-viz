@@ -10,17 +10,29 @@
 
 <body>
     <div style="margin-bottom: 10px">
-        <p>Connected to <span id="canvasId"></span></p>
+        <p>Connected to <span id="peerId"></span></p>
         <p>peers: <span id="peers"></span></p>
         <p>discovery_peers: <span id="discovery_peers"></span></p>
         <p>object_peers: <span id="object_peers"></span></p>
-        <input id="canvasIdInput" type="text" placeholder="Insert CRO ID" />
+        <input id="croId" type="text" placeholder="Insert CRO ID" />
         <button id="connect">Connect</button>
-        <button id="create">Create CRO</button>
+        <button id="create">Create new ColorCRO</button>
+        <p>
+            Connected to Color CRO ID:
+            <span id="gridId" style="text-decoration: underline;"></span>
+            <button id="copyGridId" style="margin-left: 10px; display: none;">Copy</button>
+        </p>
     </div>
-    <svg id="dag-svg" height="200" style="position: absolute; left: 75%; top: 50%; transform: translate(-50%, -50%);">
-        <g />
-    </svg>
-    <script type="module" src="/src/index.ts"></script>
+    <div>
+        <button id="paintRed" style="display:none;">Paint Red</button>
+        <button id="paintGreen" style="display:none;">Paint Green</button>
+        <button id="paintBlue" style="display:none;">Paint Blue</button>
+        <svg id="dag-svg" height="200"
+            style="position: absolute; left: 75%; top: 50%; transform: translate(-50%, -50%);">
+            <g />
+        </svg>
+        <script type="module" src="/src/index.ts"></script>
+    </div>
 </body>
+
 </html>

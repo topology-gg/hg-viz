@@ -1,66 +1,138 @@
-import * as dagreD3 from "dagre-d3";
-import * as d3 from "d3";
+import { TopologyNode } from "@topology-foundation/node";
+import type { TopologyObject } from "@topology-foundation/object";
+import { ColorCRO } from "./objects/color";
 
-// Create the input graph
-var g = new dagreD3.graphlib.Graph()
-    .setGraph({})
-    .setDefaultEdgeLabel(function () { return {}; });
+const node = new TopologyNode();
+let topologyObject: TopologyObject;
+let colorCRO: ColorCRO;
+let peers: string[] = [];
+let discoveryPeers: string[] = [];
+let objectPeers: string[] = [];
 
-// Define nodes and edges
-g.setNode("0", { label: "0", style: "fill: none; stroke: black;", shape: "circle" });
-g.setNode("1", { label: "1", style: "fill: none; stroke: black;", shape: "circle" });
-g.setNode("2", { label: "2", style: "fill: none; stroke: black;", shape: "circle" });
-g.setNode("3", { label: "3", style: "fill: none; stroke: black;", shape: "circle" });
-g.setNode("4", { label: "4", style: "fill: none; stroke: black;", shape: "circle" });
-g.setNode("5", { label: "5", style: "fill: none; stroke: black;", shape: "circle" });
-g.setNode("6", { label: "6", style: "fill: none; stroke: black;", shape: "circle" });
-g.setNode("7", { label: "7", style: "fill: none; stroke: black;", shape: "circle" });
+const render = () => {
+	if (topologyObject) {
+		const gridIdElement = <HTMLSpanElement>document.getElementById("gridId");
+		gridIdElement.innerText = topologyObject.id;
+		const copyGridIdButton = document.getElementById("copyGridId");
+		if (copyGridIdButton) {
+			copyGridIdButton.style.display = "inline"; // Show the button
+		}
+	} else {
+		const copyGridIdButton = document.getElementById("copyGridId");
+		if (copyGridIdButton) {
+			copyGridIdButton.style.display = "none"; // Hide the button
+		}
+	}
 
-g.setEdge("0", "1", { style: "stroke: black; fill: none;", curve: d3.curveLinear});
-g.setEdge("0", "2", { style: "stroke: black; fill: none;", curve: d3.curveLinear});
-g.setEdge("0", "3", { style: "stroke: black; fill: none;", curve: d3.curveLinear});
-g.setEdge("1", "4", { style: "stroke: black; fill: none;", curve: d3.curveLinear});
-g.setEdge("1", "5", { style: "stroke: black; fill: none;", curve: d3.curveLinear});
-g.setEdge("2", "6", { style: "stroke: black; fill: none;", curve: d3.curveLinear});
-g.setEdge("2", "5", { style: "stroke: black; fill: none;", curve: d3.curveLinear});
-g.setEdge("5", "7", { style: "stroke: black; fill: none;", curve: d3.curveLinear});
-g.setEdge("2", "7", { style: "stroke: black; fill: none;", curve: d3.curveLinear});
+	const element_peerId = <HTMLDivElement>document.getElementById("peerId");
+	element_peerId.innerHTML = `<strong>${node.networkNode.peerId}</strong>`;
 
-// Create the renderer
-const renderer = new dagreD3.render();
+	const peers_element = <HTMLDivElement>document.getElementById("peers");
+	peers_element.innerHTML = `[${peers.join(", ")}]`;
 
-// Select the SVG element and create a group inside it
-var svg = d3.select<SVGSVGElement, unknown>("#dag-svg");
-var svgGroup = svg.append<SVGGElement>("g");
+	const discovery_element = <HTMLDivElement>(
+		document.getElementById("discovery_peers")
+	);
+	discovery_element.innerHTML = `[${discoveryPeers.join(", ")}]`;
 
-// Apply zoom behavior to the SVG
-var zoom = d3.zoom<SVGSVGElement, unknown>().on("zoom", (event) => {
-    svgGroup.attr("transform", event.transform);
-});
-svg.call(zoom);
+	const object_element = <HTMLDivElement>(
+		document.getElementById("object_peers")
+	);
+	object_element.innerHTML = `[${objectPeers.join(", ")}]`;
+	(<HTMLSpanElement>document.getElementById("colorId")).innerText =
+		topologyObject?.id;
 
-// Render the graph
-renderer(svgGroup as any, g as any);
 
-// Center and resize the graph in the SVG after rendering
-setTimeout(() => {
-    const graphWidth = (g.graph() as any).width;
-    const graphHeight = (g.graph() as any).height;
+	if(!colorCRO) return;
+	console.log(!colorCRO);
+	const paintRed = document.getElementById("paintRed");
+	if (paintRed) {
+		paintRed.style.display = "inline";
+	}
+	const paintGreen = document.getElementById("paintGreen");
+	if (paintGreen) {
+		paintGreen.style.display = "inline";
+	}
+	const paintBlue = document.getElementById("paintBlue");
+	if (paintBlue) {
+		paintBlue.style.display = "inline";
+	}
 
-    // Dynamically set the SVG width and height based on graph size
-    svg.attr("width", graphWidth);
-    svg.attr("height", Math.max(graphHeight, 200)); // Ensuring minimum height
+	const hash_graph = topologyObject.hashGraph;
+	console.log(hash_graph);
+}
 
-    // Adjust zoom to fit the graph
-    const svgWidth = parseInt(svg.attr("width")!);
-    const svgHeight = parseInt(svg.attr("height")!);
+async function createConnectHandlers() {
+	node.addCustomGroupMessageHandler(topologyObject.id, (e) => {
+		if (topologyObject)
+			objectPeers = node.networkNode.getGroupPeers(topologyObject.id);
+		render();
+	});
 
-    const xCenterOffset = (svgWidth - graphWidth) / 2;
-    const yCenterOffset = (svgHeight - graphHeight) / 2;
+	node.objectStore.subscribe(topologyObject.id, (_, _obj) => {
+		render();
+	});
+}
 
-    // Set initial transform to position and scale the graph
-    svg.call(
-        zoom.transform,
-        d3.zoomIdentity.translate(xCenterOffset, yCenterOffset)
-    );
-}, 0);
+async function main() {
+	await node.start();
+	render();
+
+	node.addCustomGroupMessageHandler("", (e) => {
+		peers = node.networkNode.getAllPeers();
+		discoveryPeers = node.networkNode.getGroupPeers("topology::discovery");
+		render();
+	});
+
+	const button_create = <HTMLButtonElement>(
+		document.getElementById("create")
+	);
+
+	button_create.addEventListener("click", async () => {
+		topologyObject = await node.createObject(new ColorCRO());
+		colorCRO = topologyObject.cro as ColorCRO;
+		createConnectHandlers();
+		render();
+	});
+
+	const button_connect = <HTMLButtonElement>document.getElementById("connect");
+	button_connect.addEventListener("click", async () => {
+		const croId = (<HTMLInputElement>document.getElementById("croId"))
+			.value;
+		try {
+			topologyObject = await node.createObject(
+				new ColorCRO(),
+				croId,
+				undefined,
+				true,
+			);
+			colorCRO = topologyObject.cro as ColorCRO;
+			createConnectHandlers();
+			render();
+			console.log("Succeeded in connecting with CRO", croId);
+		} catch (e) {
+			console.error("Error while connecting with CRO", croId, e);
+		}
+	});
+
+	const button_paint_red = <HTMLButtonElement>document.getElementById("paintRed");
+	button_paint_red.addEventListener("click", () => {
+		colorCRO.paint("red");
+		render();
+	});
+
+	const button_paint_green = <HTMLButtonElement>document.getElementById("paintGreen");
+	button_paint_green.addEventListener("click", () => {
+		colorCRO.paint("green");
+		render();
+	});
+
+	const button_paint_blue = <HTMLButtonElement>document.getElementById("paintBlue");
+	button_paint_blue.addEventListener("click", () => {
+		colorCRO.paint("blue");
+		render();
+	});
+
+}
+
+main();
