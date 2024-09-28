@@ -35,14 +35,6 @@ const render = () => {
 	);
 	discovery_element.innerHTML = `[${discoveryPeers.join(", ")}]`;
 
-	const object_element = <HTMLDivElement>(
-		document.getElementById("object_peers")
-	);
-	object_element.innerHTML = `[${objectPeers.join(", ")}]`;
-	(<HTMLSpanElement>document.getElementById("colorId")).innerText =
-		topologyObject?.id;
-
-
 	if(!colorCRO) return;
 	console.log(!colorCRO);
 	const paintRed = document.getElementById("paintRed");
