@@ -3,22 +3,35 @@
 	"version": "0.1.1",
 	"license": "MIT",
 	"scripts": {
-		"dev": "vite",
+		"clean": "rm -rf dist/ node_modules/",
+		"dev": "vite serve",
 		"build": "vite build"
 	},
 	"devDependencies": {
+		"@types/d3": "^7.4.3",
 		"@types/node": "^22.5.5",
 		"dagre-d3": "^0.6.4",
 		"typescript": "^5.6.2",
-		"vite": "^5.4.6"
+		"vite": "^5.4.6",
+		"vite-plugin-node-polyfills": "^0.22.0",
+		"ts-loader": "^9.5.1"
 	},
 	"dependencies": {
 		"@topology-foundation/blueprints": "^0.2.0",
-		"@topology-foundation/network": "^0.1.1",
-		"@topology-foundation/node": "^0.1.1",
-		"@topology-foundation/object": "^0.1.1",
+		"@topology-foundation/network": "^0.2.0",
+		"@topology-foundation/node": "^0.2.0",
+		"@topology-foundation/object": "^0.2.0",
 		"@types/d3": "^7.4.3",
 		"@types/dagre-d3": "^0.6.6",
-		"ts-node": "^10.9.2"
+		"d3": "^7.9.0",
+		"ts-node": "^10.9.2",
+		"crypto-browserify": "^3.12.0",
+		"assemblyscript": "^0.27.29",
+		"stream-browserify": "^3.0.0",
+		"vm-browserify": "^1.1.2",
+		"uint8arrays": "^5.1.0",
+		"memfs": "^4.11.1",
+		"process": "^0.11.10",
+		"react-spring": "^9.7.4"
 	}
 }
