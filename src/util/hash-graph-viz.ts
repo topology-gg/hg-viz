@@ -7,14 +7,15 @@ export function createGraph(): dagreD3.graphlib.Graph {
         .setDefaultEdgeLabel(function () { return {}; });
 }
 
-export function addVertex(graph: dagreD3.graphlib.Graph, label: string): void {
-    if (!graph.hasNode(label)) {
-        graph.setNode(label, { label: label, labelType: 'text', style: "fill: none; stroke: black;", shape: "circle" });
+export function addVertex(graph: dagreD3.graphlib.Graph, vertexName: string, color: string): void {
+	console.log('addVertex,', vertexName, color)
+    if (!graph.hasNode(vertexName)) {
+        graph.setNode(vertexName, { label: '', labelType: 'text', style: `fill: ${color}; stroke: black;`, shape: "circle" });
     }
 }
 
-export function addEdge(graph: dagreD3.graphlib.Graph, edge1: string, edge2: string): void {
-    graph.setEdge(edge1, edge2, { labelType: 'text', style: "stroke: black; fill: none;", curve: d3.curveLinear });
+export function addEdge(graph: dagreD3.graphlib.Graph, fromVertexName: string, toVertexName: string): void {
+    graph.setEdge(fromVertexName, toVertexName, { labelType: 'text', style: "stroke: black; fill: none;", curve: d3.curveLinear });
 }
 
 export function renderGraph(graph: dagreD3.graphlib.Graph) {

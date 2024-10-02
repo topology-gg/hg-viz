@@ -61,25 +61,21 @@ const render = () => {
 
 	console.log(hash_graph.getAllVertices())
 
-	// Add vertices only if they don't already exist
+	// add nodes to the graph
 	hash_graph.getAllVertices().forEach(vertex => {
-		let opValue = vertex.operation.value == null ? "0" : vertex.operation.value.toString();
-		addVertex(graph_viz, opValue);
+		let colorHex = vertex.operation.value == null ? "#FFFFFF" : vertex.operation.value.toString();
+		addVertex(graph_viz, vertex.hash, colorHex);
 	});
 
-	// Add edges only if they don't already exist
+	// add edges to the graph
 	hash_graph.getAllVertices().forEach(vertex => {
 		const dependencies = hash_graph.getDependencies(vertex.hash);
-		if (dependencies.length > 0) {
-			dependencies.forEach(dependency => {
-				const dependencyVertex = hash_graph.getVertex(dependency);
-				if (dependencyVertex) {
-					let sourceValue = vertex.operation.value == null ? "0" : vertex.operation.value.toString();
-					let targetValue = dependencyVertex.operation.value == null ? "0" : dependencyVertex.operation.value.toString();
-					addEdge(graph_viz, targetValue, sourceValue);
-				}
-			});
-		}
+		dependencies.forEach(dependency => {
+			const dependencyVertex = hash_graph.getVertex(dependency);
+			if (dependencyVertex) {
+				addEdge(graph_viz, vertex.hash, dependency); // Create an edge from vertex to its dependency
+			}
+		});
 	});
 
 	// Render the graph
@@ -141,19 +137,19 @@ async function main() {
 
 	const button_paint_red = <HTMLButtonElement>document.getElementById("paintRed");
 	button_paint_red.addEventListener("click", () => {
-		colorCRO.paint("red");
+		colorCRO.paint("#CC0000"); // red
 		render();
 	});
 
 	const button_paint_green = <HTMLButtonElement>document.getElementById("paintGreen");
 	button_paint_green.addEventListener("click", () => {
-		colorCRO.paint("green");
+		colorCRO.paint("#006600"); // green
 		render();
 	});
 
 	const button_paint_blue = <HTMLButtonElement>document.getElementById("paintBlue");
 	button_paint_blue.addEventListener("click", () => {
-		colorCRO.paint("blue");
+		colorCRO.paint("#0000CC"); // blue
 		render();
 	});
 
