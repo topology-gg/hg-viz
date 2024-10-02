@@ -1,6 +1,7 @@
 import { TopologyNode } from "@topology-foundation/node";
 import type { TopologyObject } from "@topology-foundation/object";
 import { ColorCRO } from "./objects/color";
+import { createGraph, addVertex, addEdge, renderGraph } from "./util/hash-graph-viz"
 
 const node = new TopologyNode();
 let topologyObject: TopologyObject;
@@ -35,7 +36,9 @@ const render = () => {
 	);
 	discovery_element.innerHTML = `[${discoveryPeers.join(", ")}]`;
 
-	if(!colorCRO) return;
+
+
+	if (!colorCRO) return;
 	console.log(!colorCRO);
 	const paintRed = document.getElementById("paintRed");
 	if (paintRed) {
@@ -50,8 +53,37 @@ const render = () => {
 		paintBlue.style.display = "inline";
 	}
 
+	// Here he hashgraph is rendered
+
+	const graph_viz = createGraph();
+
 	const hash_graph = topologyObject.hashGraph;
-	console.log(hash_graph);
+
+	console.log(hash_graph.getAllVertices())
+
+	// Add vertices only if they don't already exist
+	hash_graph.getAllVertices().forEach(vertex => {
+		let opValue = vertex.operation.value == null ? "0" : vertex.operation.value.toString();
+		addVertex(graph_viz, opValue);
+	});
+
+	// Add edges only if they don't already exist
+	hash_graph.getAllVertices().forEach(vertex => {
+		const dependencies = hash_graph.getDependencies(vertex.hash);
+		if (dependencies.length > 0) {
+			dependencies.forEach(dependency => {
+				const dependencyVertex = hash_graph.getVertex(dependency);
+				if (dependencyVertex) {
+					let sourceValue = vertex.operation.value == null ? "0" : vertex.operation.value.toString();
+					let targetValue = dependencyVertex.operation.value == null ? "0" : dependencyVertex.operation.value.toString();
+					addEdge(graph_viz, targetValue, sourceValue);
+				}
+			});
+		}
+	});
+
+	// Render the graph
+	renderGraph(graph_viz);
 }
 
 async function createConnectHandlers() {
