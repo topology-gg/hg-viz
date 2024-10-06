@@ -53,7 +53,7 @@ const render = () => {
 		paintBlue.style.display = "inline";
 	}
 
-	// Here he hashgraph is rendered
+	// Here the hashgraph is rendered
 
 	const graph_viz = createGraph();
 
@@ -151,6 +151,20 @@ async function main() {
 	button_paint_blue.addEventListener("click", () => {
 		colorCRO.paint("#0000CC"); // blue
 		render();
+	});
+
+	document.addEventListener("keydown", (e) => {
+		if (!colorCRO) return;
+		if (e.key === "r") {
+			colorCRO.paint("#CC0000"); // red
+			render();
+		} else if (e.key === "g") {
+			colorCRO.paint("#006600"); // green
+			render();
+		} else if (e.key === "b") {
+			colorCRO.paint("#0000CC"); // blue
+			render();
+		}
 	});
 
 }
