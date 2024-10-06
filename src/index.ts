@@ -10,6 +10,15 @@ let peers: string[] = [];
 let discoveryPeers: string[] = [];
 let objectPeers: string[] = [];
 
+async function paint(color: string){
+	await new Promise((resolve) => setTimeout(resolve, 10000 - Date.now() % 10000));
+	if (color === "red") colorCRO.paint("#CC0000");
+	else if (color === "green") colorCRO.paint("#006600");
+	else if (color === "blue") colorCRO.paint("#0000CC");
+	else return;
+	render();
+}
+
 const render = () => {
 	if (topologyObject) {
 		const gridIdElement = <HTMLSpanElement>document.getElementById("gridId");
@@ -136,33 +145,33 @@ async function main() {
 	});
 
 	const button_paint_red = <HTMLButtonElement>document.getElementById("paintRed");
-	button_paint_red.addEventListener("click", () => {
-		colorCRO.paint("#CC0000"); // red
+	button_paint_red.addEventListener("click", async () => {
+		paint("red");
 		render();
 	});
 
 	const button_paint_green = <HTMLButtonElement>document.getElementById("paintGreen");
-	button_paint_green.addEventListener("click", () => {
-		colorCRO.paint("#006600"); // green
+	button_paint_green.addEventListener("click", async () => {
+		paint("green");
 		render();
 	});
 
 	const button_paint_blue = <HTMLButtonElement>document.getElementById("paintBlue");
-	button_paint_blue.addEventListener("click", () => {
-		colorCRO.paint("#0000CC"); // blue
+	button_paint_blue.addEventListener("click", async () => {
+		paint("blue");
 		render();
 	});
 
 	document.addEventListener("keydown", (e) => {
 		if (!colorCRO) return;
 		if (e.key === "r") {
-			colorCRO.paint("#CC0000"); // red
+			paint("red");
 			render();
 		} else if (e.key === "g") {
-			colorCRO.paint("#006600"); // green
+			paint("green");
 			render();
 		} else if (e.key === "b") {
-			colorCRO.paint("#0000CC"); // blue
+			paint("blue");
 			render();
 		}
 	});
