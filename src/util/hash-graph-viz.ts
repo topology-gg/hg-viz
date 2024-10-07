@@ -54,19 +54,19 @@ export function renderGraph(graph: dagreD3.graphlib.Graph) {
 
         // Dynamically set the SVG width and height based on graph size
         svg.attr("width", graphWidth);
-        svg.attr("height", Math.max(graphHeight, 200)); // Ensuring minimum height
-
+        svg.attr("height", graphHeight);
+        
         // Adjust zoom to fit the graph
-        const svgWidth = parseInt(svg.attr("width")!);
-        const svgHeight = parseInt(svg.attr("height")!);
+        // const svgWidth = parseInt(svg.attr("width")!);
+        // const svgHeight = parseInt(svg.attr("height")!);
 
-        const xCenterOffset = (svgWidth - graphWidth) / 2;
-        const yCenterOffset = (svgHeight - graphHeight) / 2;
+        // const xCenterOffset = (svgWidth - graphWidth) / 2;
+        // const yCenterOffset = (svgHeight - graphHeight) / 2;
 
-        // Set initial transform to position and scale the graph
-        svg.call(
-            zoom.transform as any,
-            d3.zoomIdentity.translate(xCenterOffset, yCenterOffset)
-        );
+        // // Set initial transform to position and scale the graph
+        // svg.call(
+        //     zoom.transform as any,
+        //     d3.zoomIdentity.translate(xCenterOffset, yCenterOffset)
+        // );
     }, 0);
 }
