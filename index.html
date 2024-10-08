@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -6,32 +6,101 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Topology - Canvas</title>
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+        }
+
+        .container {
+            display: flex;
+            height: calc(100% - 85px);
+            margin-top: 5px;
+        }
+
+        .left-panel {
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 10px;
+        }
+
+        .right-panel {
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 10px;
+        }
+
+        .cro-button {
+            margin: 5px;
+            padding: 8px 16px;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            display: none;
+        }
+
+        #paintRed {
+            background-color: #ff4136;
+        }
+
+        #paintGreen {
+            background-color: #2ecc40;
+        }
+
+        #paintBlue {
+            background-color: #0074d9;
+        }
+
+        input,
+        button {
+            margin: 2px;
+            padding: 4px 8px;
+            font-size: 14px;
+        }
+    </style>
 </head>
 
 <body>
-    <div style="margin-bottom: 10px">
-        <p>Connected to <span id="peerId"></span></p>
-        <p>peers: <span id="peers"></span></p>
-        <p>discovery_peers: <span id="discovery_peers"></span></p>
+    <div class="top-section">
+        <p>Connected to <span id="peerId">12D3KooWNA9orFsbxBx71ytsHUUmNRpthVpDG62iHyfQm4fnaaWm</span></p>
+        <p>peers: <span id="peers">[]</span></p>
+        <p>discovery_peers: <span id="discovery_peers">[]</span></p>
         <p>object_peers: <span id="object_peers"></span></p>
         <input id="croId" type="text" placeholder="Insert CRO ID" />
         <button id="connect">Connect</button>
         <button id="create">Create new ColorCRO</button>
         <p>
             Connected to Color CRO ID:
-            <span id="gridId" style="text-decoration: underline;"></span>
-            <button id="copyGridId" style="margin-left: 10px; display: none;">Copy</button>
+            <span id="gridId"></span>
+            <button id="copyGridId">Copy</button>
         </p>
     </div>
-    <div>
-        <button id="paintRed" style="display:none;">Paint Red</button>
-        <button id="paintGreen" style="display:none;">Paint Green</button>
-        <button id="paintBlue" style="display:none;">Paint Blue</button>
-        <svg id="dag-svg" height="200" style="position: absolute; left: 75%; top: 50%; transform: translate(-50%, -50%);">
-            <g />
-        </svg>
-        <script type="module" src="/src/index.ts"></script>
+    <div class="container">
+        <div class="left-panel">
+            <button id="paintRed" class="cro-button">Paint Red</button>
+            <button id="paintGreen" class="cro-button">Paint Green</button>
+            <button id="paintBlue" class="cro-button">Paint Blue</button>
+        </div>
+        <div class="right-panel">
+            <svg id="dag-svg" height="400" width="800" cursor="grab" style="border: 1px solid #000;">
+                </g>
+            </svg>
+            <p style="font-size: 30px;">Drag and Zoom using Mouse</p>
+        </div>
     </div>
+    <script type="module" src="/src/index.ts"></script>
 </body>
 
 </html>

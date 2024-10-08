@@ -152,7 +152,6 @@ async function main() {
 		colorCRO.paint("#0000CC"); // blue
 		render();
 	});
-
 }
 
 main();
