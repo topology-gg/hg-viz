@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect } from "react";
 import {
 	ReactFlow,
 	Background,
@@ -16,7 +16,7 @@ import "@xyflow/react/dist/style.css";
 import { initialNodes, nodeTypes } from "./nodes";
 import { initialEdges, edgeTypes } from "./edges";
 import { rawData } from "./data-mock";
-import { AppNode, VertexNode } from "./nodes/types";
+import { VertexNode } from "./nodes/types";
 
 export default function App() {
 	const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
