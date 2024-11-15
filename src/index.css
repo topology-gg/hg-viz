@@ -1,0 +1,21 @@
+:root {
+	font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+	line-height: 1.5;
+	font-weight: 400;
+}
+
+html,
+body,
+#root {
+	height: 100%;
+	margin: 0;
+}
+
+#search {
+	position: absolute;
+	top: 25px;
+	left: 25px;
+	z-index: 999;
+	height: 40px;
+	width: 300px;
+}
