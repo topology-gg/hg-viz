@@ -1,6 +1,5 @@
 import { useCallback, useEffect } from "react";
-import { TopologyNode } from "@topology-foundation/node";
-import type { TopologyObject } from "@topology-foundation/object";
+
 import {
 	ReactFlow,
 	Background,
@@ -14,7 +13,7 @@ import {
 	MarkerType,
 	Panel,
 } from "@xyflow/react";
-import dagre, { layout } from "@dagrejs/dagre";
+import dagre from "@dagrejs/dagre";
 
 import "@xyflow/react/dist/style.css";
 
@@ -23,7 +22,6 @@ import { initialNodes, nodeTypes } from "./nodes";
 import { initialEdges, edgeTypes } from "./edges";
 import { testData } from "./data-mock";
 import { VertexNode } from "./nodes/types";
-import { ColorCRO } from "./objects/color";
 
 const dagreGraph = new dagre.graphlib.Graph().setDefaultEdgeLabel(() => ({}));
 
@@ -126,7 +124,7 @@ export default function App() {
 				onConnect={onConnect}
 				fitView
 			>
-				<Panel position="top-left">
+				<Panel position="top-right">
 					<button onClick={onLayout}>Reset layout</button>
 				</Panel>
 				<Background />
