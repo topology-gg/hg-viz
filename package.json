@@ -9,17 +9,17 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@topology-foundation/node": "^0.3.1",
-    "@topology-foundation/object": "^0.3.1",
-    "@xyflow/react": "^12.3.6",
     "@dagrejs/dagre": "^1.1.4",
+    "@ts-drp/node": "0.7.0",
+    "@ts-drp/object": "0.7.0",
+    "@xyflow/react": "^12.3.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
   "license": "MIT",
   "devDependencies": {
-    "@types/react": "^18.2.53",
-    "@types/react-dom": "^18.2.18",
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
     "@typescript-eslint/eslint-plugin": "^6.20.0",
     "@typescript-eslint/parser": "^6.20.0",
     "@vitejs/plugin-react": "^4.2.1",
@@ -27,6 +27,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
     "typescript": "^5.3.3",
-    "vite": "^5.0.12"
+    "vite": "^5.0.12",
+    "vite-plugin-node-polyfills": "^0.22.0"
   }
 }
