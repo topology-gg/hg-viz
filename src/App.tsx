@@ -98,8 +98,8 @@ export default function App() {
 					type: "vertex",
 					position: { x: 0, y: 0 },
 					data: {
-						hash: `${vertex.hash.slice(0,4)}...${vertex.hash.slice(-4)}`,
-						nodeId: `${vertex.peerId.slice(0,4)}...${vertex.peerId.slice(-4)}`,
+						hash: vertex.hash,
+						nodeId: vertex.peerId,
 						operation: { type: vertex.operation?.opType ?? "NOP", value: vertex.operation?.value ?? "" },
 						deps: vertex.dependencies,
 					},
