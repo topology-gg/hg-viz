@@ -24,10 +24,10 @@ import { initialNodes, nodeTypes } from "./nodes";
 import { initialEdges, edgeTypes } from "./edges";
 import { VertexNode } from "./nodes/types";
 
-const dagreGraph = new dagre.graphlib.Graph().setDefaultEdgeLabel(() => ({}));
+let dagreGraph = new dagre.graphlib.Graph().setDefaultEdgeLabel(() => ({}));
 
 const nodeWidth = 200;
-const nodeHeight = 100;
+const nodeHeight = 200;
 
 const node = new DRPNode();
 await node.start();
@@ -100,8 +100,9 @@ export default function App() {
 					data: {
 						hash: vertex.hash,
 						nodeId: vertex.peerId,
-						operation: { type: vertex.operation?.opType ?? "NOP", value: vertex.operation?.value ?? "" },
+						operation: { type: vertex.operation?.opType ?? "NOP", value: vertex.operation?.value ?? [] },
 						deps: vertex.dependencies,
+						timestamp: vertex.timestamp,
 					},
 				});
 
@@ -130,7 +131,7 @@ export default function App() {
 	const [drpId, setDrpId] = useState<string>('');
 
 	const handleConnect = async () => {
-		
+		dagreGraph = new dagre.graphlib.Graph().setDefaultEdgeLabel(() => ({}));
 		console.log('Connecting with DRP ID:', drpId);
 		drpObject = await node.connectObject({
 			id: drpId,

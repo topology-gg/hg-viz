@@ -5,9 +5,10 @@ export type Vertex = {
     nodeId: string;
     operation: {
         type: string;
-        value: string;
+        value: string[];
     };
     deps: string[];
+    timestamp: number;
 };
 export type VertexNode = Node<Vertex, "vertex">;
 export type AppNode = BuiltInNode | VertexNode;

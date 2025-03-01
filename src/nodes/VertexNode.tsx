@@ -14,22 +14,27 @@ export function VertexNode({ data }: NodeProps<VertexNode>) {
 				border: `10px solid ${getColorForPeerId(data.nodeId)}`,
 				transition: "border 1s ease-in-out",
 				cursor: "pointer",
-				minWidth: isExpanded ? "300px" : "auto"
 			}}
 			onClick={() => setIsExpanded(!isExpanded)}
 		>
 			<div className="vertex-node">
 				<div className="vertex-node__hash">
-					<strong>Hash:</strong> {isExpanded ? data.hash : `${data.hash.slice(0,4)}...${data.hash.slice(-4)}`}
+					<strong>Hash:</strong> {`${data.hash.slice(0,4)}...${data.hash.slice(-4)}`}
 				</div>
 				<div className="vertex-node__id">
-					<strong>Node:</strong> {isExpanded ? data.nodeId : `${data.nodeId.slice(0,4)}...${data.nodeId.slice(-4)}`}
+					<strong>Node:</strong> {`${data.nodeId.slice(0,4)}...${data.nodeId.slice(-4)}`}
 				</div>
 				<div className="vertex-node__operation">
-					<strong>Operation:</strong> {data.operation.type}
-					{data.operation.value && `, ${data.operation.value}`}
+					<strong>Type:</strong> {data.operation.type} <br />
+					<strong>Value:</strong> <br />
+					{data.operation.value.map((v, i) => (
+						<div key={i}>{v.length > 10 ? `${v.slice(0, 4)}...${v.slice(-4)}` : v}{i < data.operation.value.length - 1 && ","}</div>
+					))}
 				</div>
-				{isExpanded && (
+				<div className="vertex-node__timestamp">
+					<strong>Timestamp:</strong> {data.timestamp}
+				</div>
+				{isExpanded && data.deps.length > 0 && (
 					<div className="vertex-node__deps">
 						<strong>Dependencies:</strong>
 						<ul style={{ 
@@ -38,10 +43,9 @@ export function VertexNode({ data }: NodeProps<VertexNode>) {
 							margin: 0,
 							fontSize: "12px",
 							maxHeight: "100px",
-							overflowY: "auto"
 						}}>
 							{data.deps.map((dep) => (
-								<li key={dep}>{dep}</li>
+								<li key={dep}>{`${dep.slice(0,4)}...${dep.slice(-4)}`}</li>
 							))}
 						</ul>
 					</div>

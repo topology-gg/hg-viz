@@ -96,8 +96,6 @@ button:focus-visible {
 
 .vertex-node__operation {
 	overflow: hidden;
-	text-overflow: ellipsis;
-	display: -webkit-box;
 	-webkit-line-clamp: 2;
 	-webkit-box-orient: vertical;
 	word-break: break-all;
@@ -119,4 +117,11 @@ button:focus-visible {
 	margin-top: 10px;
 	border-top: 1px solid #eee;
 	padding-top: 10px;
+	height: auto;
+}
+
+.vertex-node__timestamp {
+	font-size: 0.8em;
+	color: #666;
+	margin-top: 4px;
 }
