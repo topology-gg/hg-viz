@@ -153,6 +153,10 @@ export default function App() {
 				onEdgesChange={onEdgesChange}
 				onConnect={onConnect}
 				fitView
+				panOnScroll={true}
+				zoomOnScroll={false}
+				zoomOnPinch={true}
+				zoomActivationKeyCode="Meta"
 			>
 				<Panel position="top-right">
 					<button onClick={onLayout}>Reset layout</button>
