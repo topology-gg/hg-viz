@@ -130,6 +130,7 @@ export default function App() {
 	const [drpId, setDrpId] = useState<string>('');
 
 	const handleConnect = async () => {
+		
 		console.log('Connecting with DRP ID:', drpId);
 		drpObject = await node.connectObject({
 			id: drpId,
@@ -162,7 +163,10 @@ export default function App() {
 					<button onClick={onLayout}>Reset layout</button>
 				</Panel>
 				<Background />
-				<MiniMap />
+				<MiniMap 
+					pannable 
+					zoomable
+				/>
 				<Controls />
 			</ReactFlow>
 			<div className="drp-input">
