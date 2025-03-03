@@ -24,17 +24,17 @@ import { initialNodes, nodeTypes } from "./nodes";
 import { initialEdges, edgeTypes } from "./edges";
 import { VertexNode } from "./nodes/types";
 
-const dagreGraph = new dagre.graphlib.Graph().setDefaultEdgeLabel(() => ({}));
+let dagreGraph = new dagre.graphlib.Graph().setDefaultEdgeLabel(() => ({}));
 
 const nodeWidth = 200;
-const nodeHeight = 100;
+const nodeHeight = 200;
 
 const node = new DRPNode();
 await node.start();
 let drpObject: DRPObject | undefined = undefined;
 
 const getLayoutedElements = (nodes: AppNode[], edges: Edge[]) => {
-	dagreGraph.setGraph({ rankdir: "BT" });
+	dagreGraph.setGraph({ rankdir: "LR" });
 
 	nodes.forEach((node) => {
 		dagreGraph.setNode(node.id, { width: nodeWidth, height: nodeHeight });
@@ -98,10 +98,11 @@ export default function App() {
 					type: "vertex",
 					position: { x: 0, y: 0 },
 					data: {
-						hash: `${vertex.hash.slice(0,4)}...${vertex.hash.slice(-4)}`,
-						nodeId: `${vertex.peerId.slice(0,4)}...${vertex.peerId.slice(-4)}`,
-						operation: { type: vertex.operation?.opType ?? "NOP", value: vertex.operation?.value ?? "" },
+						hash: vertex.hash,
+						nodeId: vertex.peerId,
+						operation: { type: vertex.operation?.opType ?? "NOP", value: vertex.operation?.value ?? [] },
 						deps: vertex.dependencies,
+						timestamp: vertex.timestamp,
 					},
 				});
 
@@ -130,6 +131,7 @@ export default function App() {
 	const [drpId, setDrpId] = useState<string>('');
 
 	const handleConnect = async () => {
+		dagreGraph = new dagre.graphlib.Graph().setDefaultEdgeLabel(() => ({}));
 		console.log('Connecting with DRP ID:', drpId);
 		drpObject = await node.connectObject({
 			id: drpId,
@@ -153,12 +155,17 @@ export default function App() {
 				onEdgesChange={onEdgesChange}
 				onConnect={onConnect}
 				fitView
+				zoomOnPinch={true}
+				zoomActivationKeyCode="Meta"
 			>
 				<Panel position="top-right">
 					<button onClick={onLayout}>Reset layout</button>
 				</Panel>
 				<Background />
-				<MiniMap />
+				<MiniMap 
+					pannable 
+					zoomable
+				/>
 				<Controls />
 			</ReactFlow>
 			<div className="drp-input">
