@@ -1,11 +1,17 @@
 import { Handle, Position, type NodeProps } from "@xyflow/react";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 
 import { type VertexNode } from "./types";
 import { getColorForPeerId } from "../util/color";
 
 export function VertexNode({ data }: NodeProps<VertexNode>) {
 	const [isExpanded, setIsExpanded] = useState(false);
+	const [notification, setNotification] = useState("");
+
+	const showNotification = useCallback((message: string) => {
+		setNotification(message);
+		setTimeout(() => setNotification(""), 2000);
+	}, []);
 
 	return (
 		<div 
@@ -20,10 +26,47 @@ export function VertexNode({ data }: NodeProps<VertexNode>) {
 		>
 			<div className="vertex-node">
 				<div className="vertex-node__id">
-					<strong style={{color: `${getColorForPeerId(data.nodeId)}`}}>Node:</strong> {`${data.nodeId.slice(0,4)}...${data.nodeId.slice(-4)}`}
+					<strong style={{color: `${getColorForPeerId(data.nodeId)}`}}>Node:</strong> <br />
+					{`${data.nodeId.slice(0,4)}...${data.nodeId.slice(-4)}`}
+					<button 
+						onClick={(e) => {
+							e.stopPropagation();
+							navigator.clipboard.writeText(data.nodeId);
+							showNotification("Node ID copied!");
+						}}
+						style={{ 
+							background: 'none',
+							border: 'none',
+							cursor: 'pointer',
+							padding: '0 4px',
+							outline: 'none',
+							boxShadow: 'none'
+						}}
+						className="copy-button"
+					>
+						📋
+					</button>
 				</div>
 				<div className="vertex-node__hash">
-					<strong>Hash:</strong> {`${data.hash.slice(0,4)}...${data.hash.slice(-4)}`}
+					<strong>Hash:</strong> <br />
+					{`${data.hash.slice(0,4)}...${data.hash.slice(-4)}`}
+					<button
+						onClick={(e) => {
+							e.stopPropagation();
+							navigator.clipboard.writeText(data.hash);
+							showNotification("Hash copied!");
+						}}
+						style={{ 
+							background: 'none',
+							border: 'none',
+							cursor: 'pointer',
+							padding: '0 4px',
+							outline: 'none',
+							boxShadow: 'none'
+						}}
+					>
+						📋
+					</button>
 				</div>
 				<div className="vertex-node__timestamp">
 					<strong>Timestamp:</strong> {data.timestamp}
@@ -54,6 +97,25 @@ export function VertexNode({ data }: NodeProps<VertexNode>) {
 					</div>
 				)}
 			</div>
+			{notification && (
+				<div
+					style={{
+						position: "absolute",
+						bottom: "-40px",
+						left: "50%",
+						transform: "translateX(-50%)",
+						background: "rgba(0,0,0,0.8)",
+						color: "white",
+						padding: "4px 12px",
+						borderRadius: "4px",
+						fontSize: "12px",
+						animation: "slideUp 0.3s ease-out",
+						zIndex: 1000,
+					}}
+				>
+					{notification}
+				</div>
+			)}
 			{data.deps.length > 0 && (
 				<Handle type="target" position={Position.Left} />
 			)}
