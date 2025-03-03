@@ -34,7 +34,7 @@ await node.start();
 let drpObject: DRPObject | undefined = undefined;
 
 const getLayoutedElements = (nodes: AppNode[], edges: Edge[]) => {
-	dagreGraph.setGraph({ rankdir: "BT" });
+	dagreGraph.setGraph({ rankdir: "LR" });
 
 	nodes.forEach((node) => {
 		dagreGraph.setNode(node.id, { width: nodeWidth, height: nodeHeight });
@@ -155,8 +155,6 @@ export default function App() {
 				onEdgesChange={onEdgesChange}
 				onConnect={onConnect}
 				fitView
-				panOnScroll={true}
-				zoomOnScroll={false}
 				zoomOnPinch={true}
 				zoomActivationKeyCode="Meta"
 			>
