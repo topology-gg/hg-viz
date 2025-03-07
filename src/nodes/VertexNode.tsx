@@ -44,7 +44,7 @@ export function VertexNode({ data }: NodeProps<VertexNode>) {
 			</style>
 			<div className="vertex-node">
 				<div className="vertex-node__id">
-					<strong style={{color: `${getColorForPeerId(data.nodeId)}`}}>Node:</strong> <br />
+					<strong style={{color: `${getColorForPeerId(data.nodeId)}`}}>Peer ID:</strong> <br />
 					{`${data.nodeId.slice(0,4)}...${data.nodeId.slice(-4)}`}
 					<button 
 						onClick={(e) => {
