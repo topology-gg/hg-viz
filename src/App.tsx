@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { DRPNode } from "@ts-drp/node";
 import { DRPObject } from "@ts-drp/object";
 
@@ -25,6 +25,17 @@ import { initialEdges, edgeTypes } from "./edges";
 import { VertexNode } from "./nodes/types";
 
 let dagreGraph = new dagre.graphlib.Graph().setDefaultEdgeLabel(() => ({}));
+
+interface DRPVertex {
+	hash: string;
+	peerId: string;
+	operation?: {
+		opType: string;
+		value: string[];
+	};
+	dependencies: string[];
+	timestamp: number;
+}
 
 const nodeWidth = 200;
 const nodeHeight = 200;
@@ -69,6 +80,7 @@ const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(initi
 export default function App() {
 	const [nodes, setNodes, onNodesChange] = useNodesState(layoutedNodes);
 	const [edges, setEdges, onEdgesChange] = useEdgesState(layoutedEdges);
+	const [searchQuery, setSearchQuery] = useState("");
 
 	const onConnect: OnConnect = useCallback(
 		(connection) => setEdges((edges) => addEdge(connection, edges)),
@@ -81,32 +93,42 @@ export default function App() {
 		setEdges(layoutedEdges);
 	};
 
-	async function createConnectHandlers() {
-		if (!drpObject) return;
-	
-		node.addCustomGroupMessageHandler(drpObject?.id, () => {});
-	
-		node.objectStore.subscribe(drpObject?.id, () => {
-			console.log('Object updated');
-			console.log("Hashgraph: ", drpObject?.hashGraph);
-			const nodes: VertexNode[] = [];
-			const edges: Edge[] = [];
-			if (!drpObject) return;
-			for (const vertex of drpObject.hashGraph.vertices.values()) {
-				nodes.push({
-					id: vertex.hash,
-					type: "vertex",
-					position: { x: 0, y: 0 },
-					data: {
-						hash: vertex.hash,
-						nodeId: vertex.peerId,
-						operation: { type: vertex.operation?.opType ?? "NOP", value: vertex.operation?.value ?? [] },
-						deps: vertex.dependencies,
-						timestamp: vertex.timestamp,
-					},
-				});
+	const isVertexMatchingSearch = useCallback((vertex: DRPVertex, searchLower: string) => {
+		if (!vertex.operation?.value || !searchLower) return false;
 
-				for (const dep of vertex.dependencies) {
+		return (
+			vertex.peerId.toLowerCase().includes(searchLower) ||
+			vertex.operation.opType.toLowerCase().includes(searchLower) ||
+			vertex.operation.value.some((v: string) => v.toLowerCase().includes(searchLower)) ||
+			vertex.hash.toLowerCase().includes(searchLower)
+		);
+	}, []);
+
+	const createNodeFromVertex = useCallback((vertex: DRPVertex, isMatching: boolean): VertexNode => {
+		return {
+			id: vertex.hash,
+			type: "vertex",
+			position: { x: 0, y: 0 },
+			data: {
+				hash: vertex.hash,
+				nodeId: vertex.peerId,
+				operation: {
+					type: vertex.operation?.opType ?? "NOP",
+					value: vertex.operation?.value ?? [],
+				},
+				deps: vertex.dependencies,
+				timestamp: vertex.timestamp,
+				isMatching,
+			},
+		};
+	}, []);
+
+	const createEdgesFromDependencies = useCallback(
+		(vertex: DRPVertex, filteredVertices: DRPVertex[]) => {
+			const edges: Edge[] = [];
+
+			for (const dep of vertex.dependencies) {
+				if (filteredVertices.some(v => v.hash === dep)) {
 					edges.push({
 						id: `${dep}->${vertex.hash}`,
 						source: dep,
@@ -116,15 +138,60 @@ export default function App() {
 							type: MarkerType.Arrow,
 							width: 25,
 							height: 25,
-						}
+						},
 					});
 				}
 			}
-			// get layouted elements
-			const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(nodes, edges);
 
-			setNodes(layoutedNodes);
-			setEdges(layoutedEdges);
+			return edges;
+		},
+		[]
+	);
+
+	const updateNodesAndEdges = useCallback(() => {
+		if (!drpObject?.hashGraph) return;
+
+		const nodes: VertexNode[] = [];
+		const edges: Edge[] = [];
+		const searchLower = searchQuery.toLowerCase();
+
+		// Filter vertices based on universal search
+		const filteredVertices = Array.from(drpObject.hashGraph.vertices.values());
+
+		for (const vertex of filteredVertices) {
+			const isMatching = isVertexMatchingSearch(vertex, searchLower);
+
+			nodes.push(createNodeFromVertex(vertex, isMatching));
+
+			edges.push(...createEdgesFromDependencies(vertex, filteredVertices));
+		}
+
+		const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(nodes, edges);
+		setNodes(layoutedNodes);
+		setEdges(layoutedEdges);
+	}, [
+		searchQuery,
+		setNodes,
+		setEdges,
+		isVertexMatchingSearch,
+		createNodeFromVertex,
+		createEdgesFromDependencies,
+	]);
+
+	// Update nodes when search query changes
+	useEffect(() => {
+		updateNodesAndEdges();
+	}, [searchQuery, updateNodesAndEdges]);
+
+	async function createConnectHandlers() {
+		if (!drpObject) return;
+	
+		node.addCustomGroupMessageHandler(drpObject?.id, () => {});
+	
+		node.objectStore.subscribe(drpObject?.id, () => {
+			console.log('Object updated');
+			console.log("Hashgraph: ", drpObject?.hashGraph);
+			updateNodesAndEdges();
 		});
 	}
 
@@ -159,20 +226,47 @@ export default function App() {
 				zoomActivationKeyCode="Meta"
 			>
 				<Panel position="top-right">
-					<button onClick={onLayout}>Reset layout</button>
+					<div
+						style={{
+							display: "flex",
+							flexDirection: "column",
+							gap: "8px",
+							background: "white",
+							padding: "12px",
+							borderRadius: "8px",
+							boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+						}}
+					>
+						<button onClick={onLayout}>Reset layout</button>
+						<input
+							type="text"
+							placeholder="Search nodes (peer, operation, hash...)"
+							value={searchQuery}
+							onChange={(e) => setSearchQuery(e.target.value)}
+							style={{ 
+								padding: '8px',
+								borderRadius: '4px',
+								border: '1px solid #ccc',
+								width: '250px',
+								fontSize: '14px'
+							}}
+						/>
+					</div>
 				</Panel>
 				<Background />
 				<MiniMap 
 					pannable 
 					zoomable
+					nodeColor={node => {
+						const data = node.data as VertexNode['data'];
+						return data.isMatching ? '#ffd700' : '#ddd';
+					}}
+					nodeStrokeWidth={10}
 				/>
 				<Controls />
 			</ReactFlow>
 			<div className="drp-input">
-				<label 
-					htmlFor="drpId" 
-					className="drp-input__label"
-				>
+				<label htmlFor="drpId" className="drp-input__label">
 					DRP ID:
 				</label>
 				<input
@@ -183,11 +277,7 @@ export default function App() {
 					placeholder="Enter DRP ID"
 					className="drp-input__field"
 				/>
-				<button
-					onClick={handleConnect}
-					className="drp-input__button"
-					disabled={!drpId}
-				>
+				<button onClick={handleConnect} className="drp-input__button" disabled={!drpId}>
 					Connect
 				</button>
 			</div>

@@ -13,20 +13,38 @@ export function VertexNode({ data }: NodeProps<VertexNode>) {
 		setTimeout(() => setNotification(""), 2000);
 	}, []);
 
+	const glowStyle = data.isMatching ? {
+		boxShadow: '0 0 20px #ffd700',
+		animation: 'glow 1.5s ease-in-out infinite alternate'
+	} : {};
+
 	return (
 		<div 
 			className="react-flow__node-default" 
 			style={{ 
 				border: `10px solid ${getColorForPeerId(data.nodeId)}`,
 				borderRadius: "20px",
-				transition: "border 1s ease-in-out",
+				transition: "all 0.3s ease-in-out",
 				cursor: "pointer",
+				...glowStyle
 			}}
 			onClick={() => setIsExpanded(!isExpanded)}
 		>
+			<style>
+				{`
+					@keyframes glow {
+						from {
+							box-shadow: 0 0 10px #ffd700;
+						}
+						to {
+							box-shadow: 0 0 20px #ffd700, 0 0 30px #ffd700;
+						}
+					}
+				`}
+			</style>
 			<div className="vertex-node">
 				<div className="vertex-node__id">
-					<strong style={{color: `${getColorForPeerId(data.nodeId)}`}}>Node:</strong> <br />
+					<strong style={{color: `${getColorForPeerId(data.nodeId)}`}}>Peer ID:</strong> <br />
 					{`${data.nodeId.slice(0,4)}...${data.nodeId.slice(-4)}`}
 					<button 
 						onClick={(e) => {

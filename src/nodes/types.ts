@@ -1,6 +1,6 @@
-import type { Node, BuiltInNode } from "@xyflow/react";
+import { Node } from "@xyflow/react";
 
-export type Vertex = {
+export interface Vertex extends Record<string, unknown> {
     hash: string;
     nodeId: string;
     operation: {
@@ -9,6 +9,8 @@ export type Vertex = {
     };
     deps: string[];
     timestamp: number;
-};
-export type VertexNode = Node<Vertex, "vertex">;
-export type AppNode = BuiltInNode | VertexNode;
+    isMatching?: boolean;
+}
+
+export type VertexNode = Node<Vertex>;
+export type AppNode = VertexNode;
