@@ -26,6 +26,17 @@ import { VertexNode } from "./nodes/types";
 
 let dagreGraph = new dagre.graphlib.Graph().setDefaultEdgeLabel(() => ({}));
 
+interface DRPVertex {
+	hash: string;
+	peerId: string;
+	operation?: {
+		opType: string;
+		value: string[];
+	};
+	dependencies: string[];
+	timestamp: number;
+}
+
 const nodeWidth = 200;
 const nodeHeight = 200;
 
@@ -82,37 +93,39 @@ export default function App() {
 		setEdges(layoutedEdges);
 	};
 
-	const updateNodesAndEdges = useCallback(() => {
-		if (!drpObject?.hashGraph) return;
+	const isVertexMatchingSearch = useCallback((vertex: DRPVertex, searchLower: string) => {
+		if (!vertex.operation?.value || !searchLower) return false;
 
-		const nodes: VertexNode[] = [];
-		const edges: Edge[] = [];
-		const searchLower = searchQuery.toLowerCase();
-		
-		// Filter vertices based on universal search
-		const filteredVertices = Array.from(drpObject.hashGraph.vertices.values());
+		return (
+			vertex.peerId.toLowerCase().includes(searchLower) ||
+			vertex.operation.opType.toLowerCase().includes(searchLower) ||
+			vertex.operation.value.some((v: string) => v.toLowerCase().includes(searchLower)) ||
+			vertex.hash.toLowerCase().includes(searchLower)
+		);
+	}, []);
 
-		for (const vertex of filteredVertices) {
-			const isMatching = vertex.operation?.value && searchQuery ? (
-				vertex.peerId.toLowerCase().includes(searchLower) ||
-				vertex.operation?.opType.toLowerCase().includes(searchLower) ||
-				vertex.operation?.value.some((v: string) => v.toLowerCase().includes(searchLower)) ||
-				vertex.hash.toLowerCase().includes(searchLower)
-			) : false;
-
-			nodes.push({
-				id: vertex.hash,
-				type: "vertex",
-				position: { x: 0, y: 0 },
-				data: {
-					hash: vertex.hash,
-					nodeId: vertex.peerId,
-					operation: { type: vertex.operation?.opType ?? "NOP", value: vertex.operation?.value ?? [] },
-					deps: vertex.dependencies,
-					timestamp: vertex.timestamp,
-					isMatching,
+	const createNodeFromVertex = useCallback((vertex: DRPVertex, isMatching: boolean): VertexNode => {
+		return {
+			id: vertex.hash,
+			type: "vertex",
+			position: { x: 0, y: 0 },
+			data: {
+				hash: vertex.hash,
+				nodeId: vertex.peerId,
+				operation: {
+					type: vertex.operation?.opType ?? "NOP",
+					value: vertex.operation?.value ?? [],
 				},
-			});
+				deps: vertex.dependencies,
+				timestamp: vertex.timestamp,
+				isMatching,
+			},
+		};
+	}, []);
+
+	const createEdgesFromDependencies = useCallback(
+		(vertex: DRPVertex, filteredVertices: DRPVertex[]) => {
+			const edges: Edge[] = [];
 
 			for (const dep of vertex.dependencies) {
 				if (filteredVertices.some(v => v.hash === dep)) {
@@ -125,16 +138,45 @@ export default function App() {
 							type: MarkerType.Arrow,
 							width: 25,
 							height: 25,
-						}
+						},
 					});
 				}
 			}
+
+			return edges;
+		},
+		[]
+	);
+
+	const updateNodesAndEdges = useCallback(() => {
+		if (!drpObject?.hashGraph) return;
+
+		const nodes: VertexNode[] = [];
+		const edges: Edge[] = [];
+		const searchLower = searchQuery.toLowerCase();
+
+		// Filter vertices based on universal search
+		const filteredVertices = Array.from(drpObject.hashGraph.vertices.values());
+
+		for (const vertex of filteredVertices) {
+			const isMatching = isVertexMatchingSearch(vertex, searchLower);
+
+			nodes.push(createNodeFromVertex(vertex, isMatching));
+
+			edges.push(...createEdgesFromDependencies(vertex, filteredVertices));
 		}
-		
+
 		const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(nodes, edges);
 		setNodes(layoutedNodes);
 		setEdges(layoutedEdges);
-	}, [searchQuery, setNodes, setEdges]);
+	}, [
+		searchQuery,
+		setNodes,
+		setEdges,
+		isVertexMatchingSearch,
+		createNodeFromVertex,
+		createEdgesFromDependencies,
+	]);
 
 	// Update nodes when search query changes
 	useEffect(() => {
@@ -184,7 +226,17 @@ export default function App() {
 				zoomActivationKeyCode="Meta"
 			>
 				<Panel position="top-right">
-					<div style={{ display: 'flex', flexDirection: 'column', gap: '8px', background: 'white', padding: '12px', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
+					<div
+						style={{
+							display: "flex",
+							flexDirection: "column",
+							gap: "8px",
+							background: "white",
+							padding: "12px",
+							borderRadius: "8px",
+							boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+						}}
+					>
 						<button onClick={onLayout}>Reset layout</button>
 						<input
 							type="text"
@@ -214,10 +266,7 @@ export default function App() {
 				<Controls />
 			</ReactFlow>
 			<div className="drp-input">
-				<label 
-					htmlFor="drpId" 
-					className="drp-input__label"
-				>
+				<label htmlFor="drpId" className="drp-input__label">
 					DRP ID:
 				</label>
 				<input
@@ -228,11 +277,7 @@ export default function App() {
 					placeholder="Enter DRP ID"
 					className="drp-input__field"
 				/>
-				<button
-					onClick={handleConnect}
-					className="drp-input__button"
-					disabled={!drpId}
-				>
+				<button onClick={handleConnect} className="drp-input__button" disabled={!drpId}>
 					Connect
 				</button>
 			</div>
