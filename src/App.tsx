@@ -1,6 +1,6 @@
 import { useCallback, useState, useEffect } from "react";
 import { DRPNode } from "@ts-drp/node";
-import { DRPObject } from "@ts-drp/object";
+import { IDRPObject } from "@ts-drp/types";
 
 import {
 	ReactFlow,
@@ -42,7 +42,7 @@ const nodeHeight = 200;
 
 const node = new DRPNode();
 await node.start();
-let drpObject: DRPObject | undefined = undefined;
+let drpObject: IDRPObject | undefined = undefined;
 
 const getLayoutedElements = (nodes: AppNode[], edges: Edge[]) => {
 	dagreGraph.setGraph({ rankdir: "LR" });

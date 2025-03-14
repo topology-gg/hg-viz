@@ -10,8 +10,9 @@
   },
   "dependencies": {
     "@dagrejs/dagre": "^1.1.4",
-    "@ts-drp/node": "^0.8.5",
-    "@ts-drp/object": "^0.8.5",
+    "@ts-drp/node": "^0.10.0",
+    "@ts-drp/object": "^0.10.0",
+    "@ts-drp/types": "^0.10.0",
     "@xyflow/react": "^12.4.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
